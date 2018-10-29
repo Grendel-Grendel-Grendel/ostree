@@ -7,7 +7,7 @@ Maintainer  : mz@lambdasoft.ru
 Stability   : experimental
 Portability : POSIX
 
-= Order Statistic Tree
+ = Order Statistic Tree
 
 This implementation uses weight-balanced trees which are desribed in
 
@@ -35,7 +35,6 @@ cabal bench
 @
 
 If someone knows how to improve these results or benchmarking itself, please don't hesitate to contact me
-
 -}
 module Data.OSTree
        ( OSTree
@@ -124,4 +123,14 @@ select (Bin _ k l r) i = let
     LT -> select l i
     GT -> select r $ i-n
 
+instance Functor OSTree where
+  fmap f Tip = Tip
+  fmap f (Bin s a l r) = (Bin s (f a) (fmap f l) (fmap f r))
 
+instance Foldable OSTree where
+  foldMap f Tip = mempty
+  foldMap f (Bin s a l r) = foldMap f l `mappend` f a `mappend` foldMap f r
+  
+instance Traversable OSTree where
+  traverse f Tip = pure Tip
+  traverse f (Bin s a l r) = (Bin s) <$> f a <*> traverse f l <*> traverse f r
