@@ -134,3 +134,9 @@ instance Foldable OSTree where
 instance Traversable OSTree where
   traverse f Tip = pure Tip
   traverse f (Bin s a l r) = (Bin s) <$> f a <*> traverse f l <*> traverse f r
+
+instance Ord a => Semigroup (OSTree a) where
+  (<>) a b = fromList $ (toList a) ++ (toList b) 
+
+instance Ord a => Monoid (OSTree a) where
+  mempty = empty
